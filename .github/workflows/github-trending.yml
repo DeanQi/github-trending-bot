@@ -1,0 +1,36 @@
+name: GitHub Trending 日报
+
+on:
+  schedule:
+    # 每天北京时间 8:00 执行（UTC 0:00）
+    - cron: '0 0 * * *'
+  workflow_dispatch:  # 支持手动触发
+
+jobs:
+  trending-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 安装依赖
+        run: pip install requests beautifulsoup4
+
+      - name: 运行日报脚本
+        env:
+          FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+          FEISHU_SECRET: ${{ secrets.FEISHU_SECRET }}
+        run: python github_trending_daily.py
+
+      - name: 上传日报产物
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trending-reports
+          path: output/
+          retention-days: 30
