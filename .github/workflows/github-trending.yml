@@ -19,7 +19,7 @@ jobs:
           python-version: '3.11'
 
       - name: 安装依赖
-        run: pip install requests beautifulsoup4
+        run: pip install requests beautifulsoup4 deep-translator
 
       - name: 运行日报脚本
         env:
